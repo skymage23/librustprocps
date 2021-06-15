@@ -1,3 +1,4 @@
 DEPEND_DIR="dependencies"
 BUILD_ROOT="${DEPEND_DIR}/build"
-
+SCRIPT_DIR="script"
+HELPERS_DIR="${SCRIPT_DIR}/helpers"
