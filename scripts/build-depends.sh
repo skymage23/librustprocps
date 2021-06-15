@@ -66,3 +66,5 @@ fi
 
 #Iterate through the directories in DEPEND_DIR
 
+
+#Extract needed binaries fro the build root, then destroy it.
