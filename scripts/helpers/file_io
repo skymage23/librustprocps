@@ -1,0 +1,83 @@
+if [ "#{FILE_IO}" == "" ]; then
+   FILE_IO=1
+   MAX_FILE_DESCRIPTORS=1024   #Max allowed by Linux kernel per process.
+   NEXT_FILE_DESCRIPTOR=4
+   TAKEN_FILE_DESCRIPTORS=""
+
+   FILE_IO_LOCK_FILE="/tmp/file_io.bash.lock"
+   FILE_IO_LOCK_DESCRIPT=3
+   
+
+   #This only works on Linux.
+   function is_file_descript_open {
+       local __fd=$1
+       [ -e "/dev/fd/${__fd}" ]
+       return $?
+   }
+
+   #Returns file descriptor
+   function __is_file_descript_taken {
+       local __file_descript=$1;
+       IFS=" "
+       for var in "${TAKEN_FILE_DESCRIPTORS}"; do
+           [ "${var}" == "${__file_descript}" ] && return 0;
+       done
+       return 1
+   }
+
+   function __get_next_file_descriptor {
+       local __got_descript=$1
+       #Lock the file_descript structures:
+    
+       lock_on_file ""
+       while [ ${__got_descript} -lt 1 ]' do
+           if __is_file_descript_taken "${NEXT_FILE_DESCRIPTOR} ; then
+               
+           fi
+       done
+   }
+
+   function __open_file_io_lock_file {
+       exec ${FILE_IO_LOCK_DECRIPT}<>${FILE_IO_LOCK_FILE}
+   }
+
+   FILE_IO_READONLY=0
+   FILE_IO_WRITEONLY=1
+   FILE_IO_READWRIRE=2
+   function open_file {
+       local __filename="$1"
+       local __mode="$2"
+       local __retval=0
+       
+       local __fd="`__get_next_file_descriptor`"
+       [ ${__fd} -lt 0 ] && retval 1;
+
+       case ${__mode} in
+       ${FILE_IO_READONLY}) 
+           exec ${__fd}<${__filename}
+           retval=$?           
+       ;;
+       ${FILE_IO_WRITEONLY})
+           exec ${__fd}>${__filename}
+           retval=$?
+       ;;
+       ${FILE_IO_READWRITE})
+           exec ${__fd}<>${__filename}
+           retval=$?
+       ;;
+       esac
+       return retval
+   }
+
+   function __close_file_io_lock_file {
+       exec ${FILE_IO_LOCK_DESCRIPT}>&-
+   }
+
+   function close_file {
+        local __file_descript=$1
+   }
+
+   function lock_on_file {
+        local __file_descript=$1
+   }
+fi

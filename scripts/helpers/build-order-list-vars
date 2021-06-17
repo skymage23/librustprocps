@@ -1,1 +1,6 @@
-ENTRY_DELIM='|'
+DEPENDS_DIR="dependencies"
+DEPENDS_LIST_DIR="$dependencies/depend_lists"
+
+BUILD_TREE_DELIMITER='|'
+BUILD_TREE_NAME_END_DELIM=':'
+BUILD_TREE_ELEM_DELIM=','

@@ -1,0 +1,9 @@
+FILE_STRUCT_FILE_DELIM=":"
+
+#Struct values:
+FILE_STRUCT_NAME
+
+
+function generate_struct {
+
+}
