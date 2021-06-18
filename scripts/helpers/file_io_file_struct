@@ -1,9 +1,43 @@
-FILE_STRUCT_FILE_DELIM=":"
-
-#Struct values:
-FILE_STRUCT_NAME
+if [ "${FILE_IO_FILE_STRUCT" == "" ]; then
+    FILE_IO_FILE_STRUCT=1
 
 
-function generate_struct {
+    __FIELD_DELIM=":"
+    __VAL_DELIM="="
+    #Struct values:
+    FILE_STRUCT_NAME
 
-}
+    #To-do: Add input validation.
+    function generate_struct {
+        local __filename=$1
+        local __fdesc=$2
+        local __retval="filename=${__filename}${VAL_DELIM}${__filename}"
+        __retval="${__retval}${__FIELD_DELIM}"
+        __retval="${__retval}fdec${VAL_DELIM}${__fdesc}"
+        echo "${__retval}"
+    }
+
+    function extract_value {
+        local __struct=$1
+        local __field=$2
+ 
+        local __errcode=1      
+
+        local __prev_IFS=""
+        local IFS="${__FIELD_DELIM}"
+        local __field_name
+        local __field_value
+
+        for var in read; do
+            __prev_IFS="${IFS}"
+            IFS="${__VAL_DELIM}"
+            read __field_name __field_value
+            if [ "${__field_name}" == "${__field}" ]; then
+                __errcode=0
+                echo "${__value}"
+            fi
+            IFS="${__prev_IFS}"
+        done
+        return ${__errcode}
+    }
+fi

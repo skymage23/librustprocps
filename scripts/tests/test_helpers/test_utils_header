@@ -1,0 +1,27 @@
+function __test_die {
+  >&2 echo ""
+  exit 1
+}
+
+
+#Equality functions:
+function test_basic_equality {
+    [ ! $# -gt 2  ] && __test_die "Too many arguments"
+    local __value1=$1
+    local __value2=$2
+    [ "${__value1}" != "${__value2}" ] && __test_die "Value1\(${__value1}) does not equal Value2\(${__value2}\)"
+}
+
+#Assert functions
+function assert_equal {
+    [ ! $# -lt 2 ] && __test_fie "Too few arguments"
+    [ ! $# -gt 3  ] && __test_die "Too many arguments"
+    local __value1=$1
+    local __value2=$2
+    local __equal_func="test_basic_equality"
+    if [ "$3" != "" ]; then
+        __equal_func="$3"
+    fi   
+
+    ! ${__equal_func} "$@" && __test_die "Value1\(${__value1}) does not equal Value2\(${__value2}\)"
+}

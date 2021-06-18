@@ -43,7 +43,7 @@ if [ "#{FILE_IO}" == "" ]; then
 
    FILE_IO_READONLY=0
    FILE_IO_WRITEONLY=1
-   FILE_IO_READWRIRE=2
+   FILE_IO_READWRITE=2
    function open_file {
        local __filename="$1"
        local __mode="$2"

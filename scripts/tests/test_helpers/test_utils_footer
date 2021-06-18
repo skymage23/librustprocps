@@ -1,0 +1,15 @@
+#Generate list of test functions using
+#something like: awk '$3 ~ /^_/ {print $3}' /tmp/bash_declare.txt
+TEST_FUNCTIONS=""
+
+for var in "$(declare -F | awk '$3 ~ /^test/ {print $3}')"; do
+    TEST_FUNCTIONS="${TEST_FUNCTIONS} ${var}"
+done
+
+#Call context setting function, if it is defined.
+
+#Run tests.
+for var in "TEST_FUNCTIONS"; do
+    ${var}
+    
+done
