@@ -1,15 +1,42 @@
 #Generate list of test functions using
 #something like: awk '$3 ~ /^_/ {print $3}' /tmp/bash_declare.txt
-TEST_FUNCTIONS=""
+function __is_defined {
+    local __func_name=$1
+    local __retval=0
+    local __awk_string="\$3 ~ /^${__func_name}\$/ {print \$3}"
+    local __value="`declare -F | awk \"${__awk_string}\"`"
+    if [ "${__value}" != "${__func_name}" ]; then
+        __retval=1
+    fi
+    return ${__retval}
+}
 
-for var in "$(declare -F | awk '$3 ~ /^test/ {print $3}')"; do
-    TEST_FUNCTIONS="${TEST_FUNCTIONS} ${var}"
-done
+#Look for lifecycle functions:
+INITIALIZE=""
+if __is_defined "initialize"; then
+    INITIALIZE="initialize";
+fi
 
-#Call context setting function, if it is defined.
+DESTROY=""
+if __is_defined "destroy"; then
+    DESTROY="destroy";
+fi
+
+#Collect test functions:
+_TEST_FUNCTIONS="`declare -F | \
+    awk '$3 ~ /^test_func/{print $3}' \
+    `"
+
+#Prepare context and execute tests:
+eval "${INITIALIZE}"
 
 #Run tests.
-for var in "TEST_FUNCTIONS"; do
+for var in "${_TEST_FUNCTIONS}"; do
     ${var}
-    
 done
+
+#Cleanup
+eval "${DESTROY}"
+
+
+
