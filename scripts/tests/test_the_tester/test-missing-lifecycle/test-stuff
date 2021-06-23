@@ -1,0 +1,14 @@
+CONTEXT_OBJ=""
+
+function initialize {
+    echo "Initializing context."
+    CONTEXT_OBJ="Hello, world."
+}
+
+function test_func_hello_world {
+    echo "${CONTEXT_OBJ}"
+}
+
+#function destroy {
+#    echo "Finished testing. Dying now."
+#}

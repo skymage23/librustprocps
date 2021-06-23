@@ -1,0 +1,86 @@
+#Common variables:
+TEST_DIR="$(realpath ../..)"
+TEST_HELPERS="${TEST_DIR}/test_helpers"
+
+#Function to be finished.
+#This function is tied at the hip to Bash.
+#It will not work in ANY other shell.
+declare -a arr_actual
+declare -a arr_expected
+function assert_correct_by_output_and_errcode {
+    #Make sure arr_actual and arr_expected exist
+    #and have values:
+    if [ "$(set -o posix; set | grep -i 'arr_actual')" == "" ] ||
+       [ "$(set -o posix; set | grep -i 'arr_expected')" == ""]; then
+        echo "One or more of either \"arr_actual\" and \"arr_expected\""
+        echo "is not set. This function requires these arrays."
+        echo "Please create them."
+    fi
+    local actual_size="${#arr_actual[@]}"
+    local expected_size="${#arr_expected[@]}"
+
+    #Make sure the arrays have values:
+    if [ ${}  ]; then
+
+    fi
+    function __print_comparison {
+        echo
+        echo
+        echo "# Expected output:"
+        echo "######################################"
+        echo "# Line count: ${#arr_expected[@]}"
+        echo
+        echo "# Values:"
+        echo "######################################"
+        for var in ${arr_expected}; do
+            echo "${var}"
+        done
+        echo
+        echo
+
+        echo "# Actual output:"
+        echo "######################################"
+        echo "# Line count: ${#arr_actual[@]}"
+        echo
+        echo "# Values:"
+        echo "######################################"
+        for var in ${arr_actual}; do
+            echo "${var}"
+        done
+        echo
+        echo
+    }
+    
+    #Check the errcode:
+    local __errcode="${arr_actual[-1]}"
+    if [ ${__errcode} -gt 0 ]; then
+        echo "Error. Output a has non-zero error code,"
+        echo "indicating a failure in the logic under test."
+        echo "Errcode: ${__errcode}"
+        __print_comparison
+        return 1
+    fi
+
+    local __counter=0 
+    #Actual output is fewer lines than expected.
+    #Hence, there is obviously a problem:
+    if [ ! ${actual_size} -eq ${expected_size} ]; then
+         echo "Error. Actual output and expected output do"
+         echo "do not have the same number of lines."
+         echo "This is probably due to an error in"
+         echo "the logic under test."
+         echo "Hence, we fail early here."
+         __print_comparison
+         return 1
+    fi
+    
+    #Check each line one at a time:
+    while [ ${__counter} -lt ${actual_size}  ]; do
+        if [ "${arr_actual[${__counter}]}" != "${arr_expected[${__counter}]}"  ]; then
+            echo "Error. Actual output and expected output do not match."
+            __print_comparison
+            return 1
+        fi
+        __counter=$((__counter + 1))
+    done
+}

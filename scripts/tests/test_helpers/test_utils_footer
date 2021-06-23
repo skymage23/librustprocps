@@ -18,8 +18,13 @@ if __is_defined "initialize"; then
 fi
 
 DESTROY=""
+function __destroy {
+   eval "${DESTROY}"
+}
+
 if __is_defined "destroy"; then
     DESTROY="destroy";
+    trap __destroy EXIT 
 fi
 
 #Collect test functions:
@@ -34,9 +39,6 @@ eval "${INITIALIZE}"
 for var in "${_TEST_FUNCTIONS}"; do
     ${var}
 done
-
-#Cleanup
-eval "${DESTROY}"
 
 
 

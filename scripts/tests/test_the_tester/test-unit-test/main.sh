@@ -1,7 +1,6 @@
 #!/usr/bin/bash
 set -e
-. ./test_helpers/test_utils_header
+. ../common
+. ${TEST_HELPERS}/test_utils_header
 . ./test-stuff
-. ./test_helpers/test_utils_footer
-
-echo "DESTROY: ${DESTROY}"
+. ${TEST_HELPERS}/test_utils_footer
