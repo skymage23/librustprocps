@@ -4,6 +4,29 @@
 
 err_code=0
 
+function test_arrays_not_exist {
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+    echo "% Name: \"test_arrays_not_exist\""
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+    echo "% Explanation:"
+    echo "% Tests if the function properly handles"
+    echo "% errors out if the arrays it needs"
+    echo "% do not exist."
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+    local __errcode=0;
+    unset arr_expected
+    unset arr_actual
+    assert_correct_by_output_and_errcode
+    __errcode=$?
+    #Declaring them here because otherwise we'll break
+    #the test runner.
+    declare -a arr_expected
+    declare -a arr_actual
+    [ ${__errcode} -lt 1 ] && return 1
+    return 0
+}
+
+
 #Test equal in size, and contents
 function test_equal {
     echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
@@ -81,16 +104,40 @@ function test_output_smaller_than_expected {
     arr_expected+=(1)
     arr_expected+=(0)
     assert_correct_by_output_and_errcode
-    [ "$?" -lt 1 ] && return 1
+    local __errcode=$?
+    [ ${__errcode} -lt 1 ] && return 1
+    return 0
+}
+
+function test_not_equal {
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+    echo "% Name: \"test_not_equal\""
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+    echo "% Explanation:"
+    echo "% Tests that the function returns with"
+    echo "% an error if the output is the same size"
+    echo "% as the expected output, but is not"
+    echo "% the expected output"
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+
+    arr_actual+=(2)
+    arr_actual+=(0)
+    arr_expected+=(1)
+    arr_expected+=(0)
+    assert_correct_by_output_and_errcode
+    local __errcode=$?
+    [ ${__errcode} -lt 1 ] && return 1
     return 0
 }
 
 #Add tests to "tests" array:
 declare -a tests
+tests+=("test_arrays_not_exist")
 tests+=("test_equal")
 tests+=("test_failure")
 tests+=("test_output_bigger_than_expected")
 tests+=("test_output_smaller_than_expected")
+tests+=("test_not_equal")
 __max=${#tests[@]}
 __counter=0
 
