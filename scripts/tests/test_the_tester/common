@@ -23,43 +23,34 @@ function die {
 
    local func_name=$1
    local message=$2
-   >&2 echo "${func_name}:${message}"
+   >&2 echo "% An error has occured within the test suite."
+   >&2 echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+   >&2 printf "\nFunction Name: ${func_name}:\nMessage: ${message}\n\n"
    exit 1 
 }
 
 function __arrs_exist {
-    [ ! $# -lt 1 ] && die "__arrs_exist" "Too few arguments."
-    [ ! $# -gt 1 ] && die "__arrs_exist" "Too many arguments"
-
-    [ "$(set -o posix; set | grep -i 'arr_actual')" == "" ] || \
-    [ "$(set -o posix; set | grep -i 'arr_expected')" == "" ]; && \ 
-    return 1
+    [ ${#arr_actual[@]} -eq 0 -o ${#arr_expected[@]} -eq 0 ] && return 1
     return 0
 }
 
 function assert_correct_by_output_and_errcode {
     #Make sure arr_actual and arr_expected exist
     #and have values:
-
-    #Fix this logic to properly use the "die" function
-    ! __arrs_exist  && die \
-    "assert_correct_by_output_and_errcode" \
-    "One or more of \"arr_actual\" and \"arr_expected\" \
-    is not set. This function requires these arrays. \
-    Please create them." && \
-    return 1
+    __arrs_exist
+    if [ $? -gt 0 ]; then
+        read -r -d '' message << EOM
+One or more of \"arr_actual\" and \"arr_expected\"
+is not set or does not have any values. 
+This function requires these arrays to exist
+and be populated.
+Please create and initialize them.
+EOM
+        die "assert_correct_by_output_and_errcode" "${message}"
+    fi
 
     local actual_size="${#arr_actual[@]}"
     local expected_size="${#arr_expected[@]}"
-
-    #Make sure the arrays have values:
-    if [ ${actual_size} -eq 0 ] ||
-       [ ${expected_size} -eq 0 ]; then
-       echo "One or more of \"arr_actual\" and \"arr_expected\""
-       echo "does (do) not have values. Both arrays must be populated"
-       echo "for this function to work. Returing now."
-       return 1
-    fi
 
     function __print_comparison {
         echo
@@ -128,7 +119,7 @@ function assert_errcode {
     [ ${#} -gt 1  ] && die "assert_errcode" "Error. Too many arguments."
 
     if ! __arrs_exist;  then
-
+        echo "hello"
     fi
 
     local __expected_code=$1
