@@ -37,7 +37,7 @@ eval "${INITIALIZE}"
 
 #Run tests.
 for var in "${_TEST_FUNCTIONS}"; do
-    ${var}
+    exec "${var}"
 done
 
 

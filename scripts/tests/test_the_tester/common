@@ -34,11 +34,8 @@ function __arrs_exist {
     return 0
 }
 
-function assert_correct_by_output_and_errcode {
-    #Make sure arr_actual and arr_expected exist
-    #and have values:
-    __arrs_exist
-    if [ $? -gt 0 ]; then
+function assert_arrs_exist {
+    if ! __arrs_exist; then
         read -r -d '' message << EOM
 One or more of \"arr_actual\" and \"arr_expected\"
 is not set or does not have any values. 
@@ -46,8 +43,14 @@ This function requires these arrays to exist
 and be populated.
 Please create and initialize them.
 EOM
-        die "assert_correct_by_output_and_errcode" "${message}"
+        die "assert_arrs_exist" "${message}"
     fi
+}
+
+function assert_correct_by_output_and_errcode {
+    #Make sure arr_actual and arr_expected exist
+    #and have values:
+    assert_arrs_exist
 
     local actual_size="${#arr_actual[@]}"
     local expected_size="${#arr_expected[@]}"
@@ -114,13 +117,13 @@ EOM
     done
 }
 
+
+
 function assert_errcode {
     [ $# -lt 1  ] && die "assert_errcode" "Too few arguments"
     [ ${#} -gt 1  ] && die "assert_errcode" "Error. Too many arguments."
 
-    if ! __arrs_exist;  then
-        echo "hello"
-    fi
+    assert_arrs_exist
 
     local __expected_code=$1
     #Make sure that arr_actual has output.

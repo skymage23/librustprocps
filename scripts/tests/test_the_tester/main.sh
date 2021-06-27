@@ -2,7 +2,6 @@
 
 #Get list of directories:
 __counter=0;
-
 printf "\n\n"
 find . -maxdepth 1 -type d -print0 | while IFS= read -r -d '' dirname; do
     if [ "${dirname}" != '.' ]; then

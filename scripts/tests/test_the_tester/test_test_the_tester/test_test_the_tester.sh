@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-. ./common
+. ../common
 
 err_code=0
 
@@ -18,9 +18,13 @@ function test_die {
     return 0
 }
 
+#In this function, we fork a process because the "die" function
+#calls exit, which kills its host process. We don't want to kill
+#the test runner, so we work a process and run the code under
+#test in that.
 function test_die_too_few_arguments {
     echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
-    echo "% Name: \"test_die_too few arguments\""
+    echo "% Name: \"test_die_too_few_arguments\""
     echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
     echo "% Explanation:"
     echo "% Tests if the die function errors out,"
@@ -33,8 +37,9 @@ function test_die_too_few_arguments {
 
     while read -r  var; do
         output_arr+=(${var})
-    done <<< "$(bash -c '. ./common; 2>&1 die "hello";'; echo "$?")"  # die calls "exit", so need new process  
-    echo "__errcode; ${__errcode}"
+    done <<< "$(bash -c '. ./common; 2>&1 die "hello";'; echo "$?")" 
+    __errcode=${output_arr[-1]}
+    echo "__errcode: ${__errcode}"
     if [ ${__errcode} -lt 1 ]; then
         return 1
     fi
@@ -42,6 +47,10 @@ function test_die_too_few_arguments {
     return 0
 }
 
+#In this function, we fork a process because the "die" function
+#calls exit, which kills its host process. We don't want to kill
+#the test runner, so we work a process and run the code under
+#test in that.
 function test_die_too_many_arguments {
     echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
     echo "% Name: \"test_die_too_many_arguments\""
@@ -57,8 +66,9 @@ function test_die_too_many_arguments {
     
     while read -r  var; do
         output_arr+=(${var})
-    done <<< "$(bash -c '. ./common; 2>&1 die "hello" "here" "bye";'; echo "$?")"  # die calls "exit", so need new process  
-    echo "__errcode; ${__errcode}"
+    done <<< "$(bash -c '. ./common; 2>&1 die "hello" "here" "bye";'; echo "$?")"
+    __errcode=${output_arr[-1]}
+    echo "__errcode: ${__errcode}"
     if [ ${__errcode} -lt 1 ]; then
         return 1
     fi
