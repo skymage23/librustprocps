@@ -16,5 +16,4 @@ if [ "${GLOBAL_STATE_LOCK}" == "" ];
    function gstate_unlock {
        exec ${__gstate_lock_file_desc}>-
    }
-
 fi
