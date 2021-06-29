@@ -29,6 +29,12 @@ if [ "${BACKGROUND_PROCESS}" == ""  ]; then
     __struct__const__DEAD=2
     declare -r __struct_const__DEAD
 
+    __struct__const__FIELD_DELIM=':'
+    declare -r __struct__const__FIELD_DELIM
+
+    __struct__const__VALUE_DELIM='='
+    declare -r __struct__const__VALUE_DELIM
+
     #Mutables:
     __struct__mutable__RETVAL=""
 
@@ -49,7 +55,7 @@ if [ "${BACKGROUND_PROCESS}" == ""  ]; then
         local name=$1
         local pid=0
         local status=${__struct__INITIALIZING}
-        
+        __struct__mutable__RETVAL="name${__struct__const__VALUE_DELIM}${name}${__struct__const__FIELD_DELIM}pid${__struct__const__VALUE_DELIM}${pid}${__struct__const__FIELD_DELIM}status${__struct__const__VALUE_DELIM}${status}"
     }
 
 
